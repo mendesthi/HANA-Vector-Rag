@@ -5,7 +5,7 @@ import configparser
 
 # Langchain to help with Text Chuncks generation
 from langchain_community.document_loaders import TextLoader
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.text_splitter import RecursiveCharacterTextSplitter, HTMLHeaderTextSplitter
 
 #Langchain to work with HANA Vector Engine
 from langchain_community.vectorstores.hanavector import HanaDB
@@ -32,23 +32,31 @@ else:
     hanaUser = config['database']['user']
     hanaPW = config['database']['password']
 
-chunk_and_store_blueprint = Blueprint('chunk-and-store', __name__)
+chunk_and_store_web_blueprint = Blueprint('chunk-and-store-web', __name__)
+@chunk_and_store_web_blueprint.route('/chunk-and-store-web', methods=['POST'])
 
-@chunk_and_store_blueprint.route('/chunk-and-store', methods=['POST'])
-
-def chunk_and_store():
-    filepath2load = request.get_json()['filePath']
+def chunk_and_store_web():
+    urlToChunk = request.get_json()['urlToChunk']
     mytable = request.get_json()['myTable']
-    separator = request.get_json()['separator']
-    # Let's load the file into a variable
-    text_documents = TextLoader(filepath2load).load()
+    headers2split = [
+        ("h1", "Header 1"),
+        ("h2", "Header 2"),
+        ("h3", "Header 3"),
+        ("h4", "Header 4"),
+    ]
 
-    # Then we configure the way we want to generate the chunks
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=0, separators=[separator])
+    html_splitter = HTMLHeaderTextSplitter(headers_to_split_on=headers2split)
+    html_header_splits = html_splitter.split_text_from_url(urlToChunk)
 
-    # And create the chunks
-    text_chunks = text_splitter.split_documents(text_documents)
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=30)
 
+    # Split
+    splits = text_splitter.split_documents(html_header_splits)
+    splits[80:85]
+    
+    print(splits)
+    # print(splits[80:85])
+    
     try:
         print('TCM: Connecting to HANA Cloud DB')
         # Now we connect to the HANA Cloud instance
@@ -70,13 +78,16 @@ def chunk_and_store():
 
         # For this example, we delete any previous content from
         # the table which might exist from previous runs.
-        db.delete(filter={})
+        # db.delete(filter={})
 
-        # add the loaded document chunks
-        db.add_documents(text_chunks)
-        print(text_chunks)
+        # Extract the page_content from each Document object
+        text_contents = [doc.page_content for doc in splits]
+
+        # Add the text contents to the database
+        db.add_texts(text_contents)
         print('TCM: Chunks added to TABLE')
         
         return jsonify({'response':'Chunks added to table: ' + mytable}),200
+        
     except Exception as e:
         return jsonify({'message': str(e)}), 500

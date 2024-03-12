@@ -40,20 +40,21 @@ conn = dbapi.connect(
     password=hanaPW
 )
 
-# We initialize the Embeddings model from our Generative AI Hub
-embed = init_embedding_model('text-embedding-ada-002')
-
-# And create a LangChain VectorStore interface for the HANA database and 
-# specify the table (collection) to use for accessing the vector embeddings
-db = HanaDB(
-    embedding=embed, connection=conn, table_name="GENAIQA"
-)
-
 get_direct_answer_blueprint = Blueprint('get-direct-answer', __name__)
-
 @get_direct_answer_blueprint.route('/get-direct-answer', methods=['GET'])
 def get_direct_answer():
     try:
+        mytable = request.get_json()['myTable']
+        
+        # We initialize the Embeddings model from our Generative AI Hub
+        embed = init_embedding_model('text-embedding-ada-002')
+        
+        # And create a LangChain VectorStore interface for the HANA database and 
+        # specify the table (collection) to use for accessing the vector embeddings
+        db = HanaDB(
+            embedding=embed, connection=conn, table_name=mytable
+        )
+        
         llm = init_llm('gpt-35-turbo', max_tokens=300, temperature=0.0)
         query = request.get_json()['query']
         qa_chain = RetrievalQA.from_chain_type(
@@ -64,5 +65,6 @@ def get_direct_answer():
         print(response['result'])
 
         return jsonify({'answer': response['result']}),200
+    
     except Exception as e:
         return jsonify({'message': str(e)}), 500

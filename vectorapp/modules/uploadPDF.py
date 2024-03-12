@@ -32,7 +32,8 @@ def upload_file():
         
         # We create a txt file
         txt_filename = os.path.splitext(filename)[0] + ".txt"
-        txt_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'resources', txt_filename)
+        # txt_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'resources', txt_filename)
+        txt_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'resources', txt_filename)
         
         # And write the text to the text file
         with open(txt_path, 'w') as txt_file:

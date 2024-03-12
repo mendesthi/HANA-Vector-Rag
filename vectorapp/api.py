@@ -12,6 +12,7 @@ sys.path.append(parent_dir)
 from vectorapp.modules.uploadPDF import upload_pdf_blueprint
 from vectorapp.modules.uploadHTML import upload_html_blueprint
 from vectorapp.modules.chunkAndStore import chunk_and_store_blueprint
+from vectorapp.modules.chunkFromWebAndStore import chunk_and_store_web_blueprint
 from vectorapp.modules.getContext import get_context_blueprint
 from vectorapp.modules.getAnswer import get_answer_blueprint
 from vectorapp.modules.getDirectAnswer import get_direct_answer_blueprint
@@ -22,6 +23,7 @@ CORS(app)
 app.register_blueprint(upload_pdf_blueprint)
 app.register_blueprint(upload_html_blueprint)
 app.register_blueprint(chunk_and_store_blueprint)
+app.register_blueprint(chunk_and_store_web_blueprint)
 app.register_blueprint(get_context_blueprint)
 app.register_blueprint(get_answer_blueprint)
 app.register_blueprint(get_direct_answer_blueprint)
