@@ -38,6 +38,7 @@ chunk_and_store_web_blueprint = Blueprint('chunk-and-store-web', __name__)
 def chunk_and_store_web():
     urlToChunk = request.get_json()['urlToChunk']
     mytable = request.get_json()['myTable']
+    
     headers2split = [
         ("h1", "Header 1"),
         ("h2", "Header 2"),

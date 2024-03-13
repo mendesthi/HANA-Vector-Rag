@@ -16,6 +16,7 @@ from vectorapp.modules.chunkFromWebAndStore import chunk_and_store_web_blueprint
 from vectorapp.modules.getContext import get_context_blueprint
 from vectorapp.modules.getAnswer import get_answer_blueprint
 from vectorapp.modules.getDirectAnswer import get_direct_answer_blueprint
+from vectorapp.modules.embeddingFromText import embed_from_text_blueprint
 
 app = Flask(__name__)
 CORS(app)
@@ -27,6 +28,7 @@ app.register_blueprint(chunk_and_store_web_blueprint)
 app.register_blueprint(get_context_blueprint)
 app.register_blueprint(get_answer_blueprint)
 app.register_blueprint(get_direct_answer_blueprint)
+app.register_blueprint(embed_from_text_blueprint)
 
 @app.route('/', methods=['GET'])
 def root():
