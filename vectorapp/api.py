@@ -34,11 +34,11 @@ sys.path.append(parent_dir)
 # reddit_user_agent = "your_user_agent"
 # reddit_username = "your_reddit_username"
 # reddit_password = "your_reddit_password"
-# reddit_client_id = "Rq-IEhjnDPf1nCCJR515ow"
-# reddit_client_secret = "afvIvKS16qF7N9lZRmKev-GGi4YRJQ"
+# reddit_client_id = ""
+# reddit_client_secret = ""
 # reddit_user_agent = "GenAI Reporting App/0.1"
-# reddit_username = "btpsa"
-# reddit_password = "zxCV12#$"
+# reddit_username = ""
+# reddit_password = ""
 
 # Subreddit to monitor
 subreddit_name = "ASK_SAGENAICITY"
